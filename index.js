@@ -3,7 +3,7 @@ let resultDisplay = document.getElementById("result");
 let buttons = document.querySelectorAll("button");
 let buttonsArray = Array.from(buttons);
 let string = "";
-let lastClickedEquals = false;
+let resultCalculated = false;
 
 buttonsArray.forEach((item) => {
   item.addEventListener("click", function (e) {
@@ -25,24 +25,28 @@ buttonsArray.forEach((item) => {
         string = string.replace(/(\d+)%/g, "($1/100)");
         string = eval(string);
 
-        if (string === Infinity || string === -Infinity || isNaN(string)) {
-          string = "Error";
+        if (string === Infinity || string === -Infinity) {
+          string = "Infinity";
         } else {
-          lastClickedEquals = true;
+          resultCalculated = true;
+          resultDisplay.textContent = string;
         }
       } catch (err) {
         string = "Error";
       }
       display.value = string;
-      resultDisplay.textContent = "";
     } else {
       if (display.value === "Error" || display.value === "Infinity") {
         string = "";
       }
 
-      if (lastClickedEquals) {
-        string = buttonValue;
-        lastClickedEquals = false;
+      if (resultCalculated) {
+        if (["+", "-", "*", "/"].includes(buttonValue)) {
+          string = display.value + buttonValue;
+        } else {
+          string = buttonValue;
+        }
+        resultCalculated = false;
         resultDisplay.textContent = "";
       } else {
         let lastChar = string.slice(-1);
@@ -76,7 +80,6 @@ buttonsArray.forEach((item) => {
       }
 
       display.value = string;
-      resultDisplay.textContent = ""; // Clear result display when typing
     }
   });
 });
