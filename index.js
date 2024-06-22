@@ -32,11 +32,11 @@ buttonsArray.forEach((item) => {
           resultDisplay.textContent = string;
         }
       } catch (err) {
-        string = "Error";
+        string = "Format Error";
       }
       display.value = string;
     } else {
-      if (display.value === "Error" || display.value === "Infinity") {
+      if (display.value === "Format Error" || display.value === "Infinity") {
         string = "";
       }
 
@@ -53,8 +53,10 @@ buttonsArray.forEach((item) => {
 
         if (["+", "-", "*", "/"].includes(buttonValue)) {
           if (["+", "-", "*", "/"].includes(lastChar)) {
-            if ((buttonValue === "-" && (lastChar === "*" || lastChar === "/")) ||
-                (buttonValue === "+" && (lastChar === "*" || lastChar === "/"))) {
+            if (
+              (buttonValue === "-" && (lastChar === "*" || lastChar === "/")) ||
+              (buttonValue === "+" && (lastChar === "*" || lastChar === "/"))
+            ) {
               string += buttonValue;
             } else {
               string = string.slice(0, -1) + buttonValue;
@@ -71,7 +73,11 @@ buttonsArray.forEach((item) => {
             return;
           }
 
-          if (["+", "-", "*", "/"].includes(lastChar) && buttonValue === "0" && string.slice(-2) === "0" + buttonValue) {
+          if (
+            ["+", "-", "*", "/"].includes(lastChar) &&
+            buttonValue === "0" &&
+            string.slice(-2) === "0" + buttonValue
+          ) {
             return;
           }
 
