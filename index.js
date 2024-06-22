@@ -2,6 +2,7 @@ let display = document.getElementById("inputBox");
 let buttons = document.querySelectorAll("button");
 let buttonsArray = Array.from(buttons);
 let string = "";
+let resultCalculated = false;
 
 buttonsArray.forEach((item) => {
   item.addEventListener("click", function (e) {
@@ -25,6 +26,8 @@ buttonsArray.forEach((item) => {
 
         if (string === Infinity || string === -Infinity) {
           string = "Infinity";
+        } else {
+          resultCalculated = true;
         }
       } catch (err) {
         string = "Error";
@@ -35,43 +38,52 @@ buttonsArray.forEach((item) => {
         string = "";
       }
 
-      let lastChar = string.slice(-1);
+      if (resultCalculated) {
+        if (["+", "-", "*", "/"].includes(buttonValue)) {
+          string = display.value + buttonValue;
+        } else {
+          string = buttonValue;
+        }
+        resultCalculated = false;
+      } else {
+        let lastChar = string.slice(-1);
 
-      // Validate operator sequences
-      if (["+", "-", "*", "/"].includes(buttonValue)) {
-        if (["+", "-", "*", "/"].includes(lastChar)) {
-          // Allow valid combinations like *- or /-
-          if (
-            (buttonValue === "-" && (lastChar === "*" || lastChar === "/")) ||
-            (buttonValue === "+" && (lastChar === "*" || lastChar === "/"))
-          ) {
-            string += buttonValue;
+        // Validate operator sequences
+        if (["+", "-", "*", "/"].includes(buttonValue)) {
+          if (["+", "-", "*", "/"].includes(lastChar)) {
+            // Allow valid combinations like *- or /-
+            if (
+              (buttonValue === "-" && (lastChar === "*" || lastChar === "/")) ||
+              (buttonValue === "+" && (lastChar === "*" || lastChar === "/"))
+            ) {
+              string += buttonValue;
+            } else {
+              string = string.slice(0, -1) + buttonValue;
+            }
           } else {
-            string = string.slice(0, -1) + buttonValue;
+            string += buttonValue;
           }
         } else {
+          // Prevent adding '00' at the start of a number
+          if (string === "" && buttonValue === "0") {
+            return; // Ignore the input if it's leading zero
+          }
+
+          if (string === "0" && buttonValue === "0") {
+            return; // Prevents '00' at the start
+          }
+
+          // Prevent 00 after an operator like +00, -00, *00, /00
+          if (
+            ["+", "-", "*", "/"].includes(lastChar) &&
+            buttonValue === "0" &&
+            string.slice(-2) === "0" + buttonValue
+          ) {
+            return;
+          }
+
           string += buttonValue;
         }
-      } else {
-        // Prevent adding '00' at the start of a number
-        if (string === "" && buttonValue === "0") {
-          return; // Ignore the input if it's leading zero
-        }
-
-        if (string === "0" && buttonValue === "0") {
-          return; // Prevents '00' at the start
-        }
-
-        // Prevent 00 after an operator like +00, -00, *00, /00
-        if (
-          ["+", "-", "*", "/"].includes(lastChar) &&
-          buttonValue === "0" &&
-          string.slice(-2) === "0" + buttonValue
-        ) {
-          return;
-        }
-
-        string += buttonValue;
       }
 
       display.value = string;
