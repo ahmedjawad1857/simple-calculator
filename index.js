@@ -1,9 +1,7 @@
 let display = document.getElementById("inputBox");
-let resultDisplay = document.getElementById("result");
 let buttons = document.querySelectorAll("button");
 let buttonsArray = Array.from(buttons);
 let string = "";
-let resultCalculated = false;
 
 buttonsArray.forEach((item) => {
   item.addEventListener("click", function (e) {
